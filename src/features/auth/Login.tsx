@@ -86,11 +86,6 @@ const Login: React.FC = () => {
           Forgot Password?
         </Link>
       </div>
-      <div className="mt-2 text-center">
-        <Link to="/reset-password" className="text-blue-600 hover:underline">
-          Reset Password
-        </Link>
-      </div>
     </div>
   );
 };

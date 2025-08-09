@@ -44,14 +44,14 @@ export const authApi = createApi({
         method: 'POST',
       }),
     }),
-    forgotPassword: builder.mutation<void, { email: string }>({
+    forgotPassword: builder.mutation<{ message: string }, { email: string }>({
       query: (body) => ({
         url: '/auth/forgot-password',
         method: 'POST',
         body,
       }),
     }),
-    resetPassword: builder.mutation<void, { token: string; password: string }>({
+    resetPassword: builder.mutation<{ message: string }, { email: string; otp: string; newPassword: string }>({
       query: (body) => ({
         url: '/auth/reset-password',
         method: 'POST',
