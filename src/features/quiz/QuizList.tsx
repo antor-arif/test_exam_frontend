@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useGetQuizzesQuery, Quiz, QuizQueryParams } from '../../api/quizApi';
-import { useAppDispatch } from '../../hooks/index';
+import { useGetQuizzesQuery, Quiz, QuizQueryParams, useGetUserQuizResultsQuery } from '../../api/quizApi';
+import { useAppDispatch, useAppSelector } from '../../hooks/index';
 import { setCurrentQuizId } from './quizSlice';
 import { useNavigate } from 'react-router-dom';
 
 const QuizList: React.FC = () => {
   const [page, setPage] = useState(1);
   const [quizzesList, setQuizzesList] = useState<Quiz[]>([]);
+  const [failedQuizzes, setFailedQuizzes] = useState<Set<string>>(new Set());
+  
   const { data, error, isLoading } = useGetQuizzesQuery({
     page,
     limit: 6
@@ -14,12 +16,30 @@ const QuizList: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const user = useAppSelector(state => state.auth.user);
+
+  
+  const { data: userQuizResults } = useGetUserQuizResultsQuery('all', {
+    skip: !user || !user.id
+  });
 
   useEffect(() => {
     if (data) {
       setQuizzesList(data.quizzes);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (userQuizResults) {
+      const failedIds = new Set<string>();
+      userQuizResults?.data?.forEach((result: any) => {
+        if (result.levelAwarded === "Fail") {
+          failedIds.add(result?.quiz?.id);
+        }
+      });
+      setFailedQuizzes(failedIds);
+    }
+  }, [userQuizResults]);
 
   const handleStartQuiz = (quizId: string) => {
     dispatch(setCurrentQuizId(quizId));
@@ -59,12 +79,20 @@ const QuizList: React.FC = () => {
                   <span className="text-xs sm:text-sm bg-green-600 text-white py-1 px-2 rounded">
                     {quiz?.niche}
                   </span>
-                  <button
-                    onClick={() => handleStartQuiz(quiz._id)}
-                    className="w-full sm:w-auto mt-2 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition text-center"
-                  >
-                    Start Test
-                  </button>
+                  {failedQuizzes.has(quiz._id) ? (
+                    <div className="w-full mt-2">
+                      <div className="bg-red-100 text-red-800 text-xs sm:text-sm py-2 px-3 rounded">
+                        You have previously failed this quiz and cannot retake it.
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleStartQuiz(quiz._id)}
+                      className="w-full sm:w-auto mt-2 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition text-center"
+                    >
+                      Start Test
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

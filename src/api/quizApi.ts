@@ -185,6 +185,10 @@ export const quizApi = createApi({
         { type: 'AdminQuiz', id: quizId },
       ],
     }),
+    getUserQuizResults: builder.query<any, string>({
+      query: (quizId) => `/quiz/results`,
+      providesTags: (result, error, quizId) => [{ type: 'Quiz', id: `results_${quizId}` }],
+    }),
   }),
 });
 
@@ -202,5 +206,6 @@ export const {
   useGetAdminQuizByIdQuery,
   useCreateQuestionMutation,
   useUpdateQuestionMutation,
-  useDeleteQuestionMutation
+  useDeleteQuestionMutation,
+  useGetUserQuizResultsQuery
 } = quizApi;

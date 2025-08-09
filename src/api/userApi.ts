@@ -18,16 +18,33 @@ export interface Quiz {
   createdAt: string;
 }
 
+export interface Certificate {
+  id: string;
+  quizId: any;
+  quizName: string;
+  level: string;
+  score: number;
+  date: string;
+  step: number;
+  certificateId: string;
+  certificateUrl: string;
+  viewUrl: string | null;
+}
+
 export interface QuizResult {
   id: string;
-  userId: string;
-  userName: string;
-  quizId: string;
-  quizTitle: string;
+  quiz: {
+    id: string;
+    name: string;
+    niche: string;
+  } | null;
+  step: number;
   score: number;
-  totalQuestions: number;
-  submittedAt: string;
-  timeTaken: number;
+  levelAwarded: string;
+  hasCertificate: boolean;
+  certificateId: string;
+  certificateUrl: string;
+  date: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -41,6 +58,13 @@ export interface PaginatedResponse<T> {
   };
 }
 
+export interface UserResultsParams {
+  page?: number;
+  limit?: number;
+  quizId?: string;
+  level?: string;
+}
+
 export interface UserQueryParams {
   page?: number;
   limit?: number;
@@ -50,7 +74,7 @@ export interface UserQueryParams {
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery,
-  tagTypes: ['Users', 'Quizzes', 'Results'],
+  tagTypes: ['Users', 'Quizzes', 'Results', 'Certificates'],
   endpoints: (builder) => ({
     getUsers: builder.query<PaginatedResponse<User>, UserQueryParams>({
       query: (params = { page: 1, limit: 10 }) => {
@@ -144,6 +168,41 @@ export const userApi = createApi({
         { type: 'Results', id: 'LIST' },
       ],
     }),
+    
+    getUserResults: builder.query<{ data: QuizResult[], meta: any }, UserResultsParams>({
+      query: (params = {}) => {
+        const { page = 1, limit = 10, quizId, level } = params;
+        let url = '/quiz/results';
+        const queryParams = new URLSearchParams();
+        
+        queryParams.append('page', page.toString());
+        queryParams.append('limit', limit.toString());
+        if (quizId) queryParams.append('quizId', quizId);
+        if (level) queryParams.append('level', level);
+        
+        return `${url}?${queryParams.toString()}`;
+      },
+      providesTags: ['Results'],
+    }),
+    
+    getUserCertificates: builder.query<{ data: Certificate[] }, void>({
+      query: () => '/quiz/certificates',
+      providesTags: ['Certificates'],
+    }),
+    
+    downloadCertificate: builder.query<Blob, string>({
+      query: (resultId) => ({
+        url: `/quiz/certificates/${resultId}/download`,
+        responseHandler: (response) => response.blob(),
+      }),
+    }),
+    
+    viewCertificate: builder.query<string, string>({
+      query: (certificateId) => ({
+        url: `/quiz/certificates/${certificateId}/view`,
+        responseHandler: (response) => response.text(),
+      }),
+    }),
   }),
 });
 
@@ -166,4 +225,10 @@ export const {
   useGetResultByIdQuery,
   useGetResultsByQuizQuery,
   useGetResultsByUserQuery,
+  
+  // Student results and certificates hooks
+  useGetUserResultsQuery,
+  useGetUserCertificatesQuery,
+  useDownloadCertificateQuery,
+  useViewCertificateQuery,
 } = userApi;

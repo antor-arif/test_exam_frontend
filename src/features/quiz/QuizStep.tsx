@@ -98,14 +98,15 @@ const QuizStep: React.FC = () => {
           step: stepNumber,
           answers: formattedAnswers
         }).unwrap();
-        
+
+
       
         dispatch(completeStep(stepNumber));
         
        
         setStepResult({
-          proceed: stepResponse.proceed,
-          levelAwarded: stepResponse.result.levelAwarded
+          proceed: stepResponse?.proceed,
+          levelAwarded: stepResponse?.result?.levelAwarded
         });
         setShowStepResult(true);
         

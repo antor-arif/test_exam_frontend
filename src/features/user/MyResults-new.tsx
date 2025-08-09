@@ -142,6 +142,7 @@ const MyResults: React.FC = () => {
         </div>
       )}
       
+      {/* Pagination */}
       {meta.totalPages > 1 && (
         <div className="mt-6 flex justify-center">
           <nav className="flex items-center">
@@ -179,6 +180,7 @@ const MyResults: React.FC = () => {
         </div>
       )}
       
+      {/* Quick Stats Section */}
       {results.length > 0 && (
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
