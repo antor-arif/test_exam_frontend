@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGetUserCertificatesQuery, useDownloadCertificateQuery } from '../../api/userApi';
 import { useAppSelector } from '../../hooks';
 
 const Certificates: React.FC = () => {
   const [selectedCertificateId, setSelectedCertificateId] = useState<string | null>(null);
-  const [viewingCertificate, setViewingCertificate] = useState<string | null>(null);
+  const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
   
   const { 
@@ -30,18 +31,18 @@ const Certificates: React.FC = () => {
     });
   };
   
-  const handleDownload = (resultId: string) => {
-    setSelectedCertificateId(resultId);
+  const handleDownload = (certificateId: string) => {
+    setSelectedCertificateId(certificateId);
     if (certificateBlob) {
-      downloadCertificate(certificateBlob, resultId);
+      downloadCertificate(certificateBlob, certificateId);
     }
   };
   
-  const downloadCertificate = (blob: Blob, resultId: string) => {
+  const downloadCertificate = (blob: Blob, certificateId: string) => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `certificate_${resultId}.pdf`;
+    a.download = `certificate_${certificateId}.pdf`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -49,10 +50,8 @@ const Certificates: React.FC = () => {
     setSelectedCertificateId(null);
   };
   
-  const handleViewCertificate = (viewUrl: string | null) => {
-    if (viewUrl) {
-      window.open(viewUrl, '_blank');
-    }
+  const handleViewCertificate = (certificateId: string) => {
+    navigate(`/certificates/${certificateId}/view`);
   };
   
   useEffect(() => {
@@ -132,18 +131,17 @@ const Certificates: React.FC = () => {
             
             <div className="flex space-x-2 mt-4">
               <button
-                onClick={() => handleViewCertificate(certificate.viewUrl)}
-                disabled={!certificate.viewUrl}
-                className="flex-1 px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition disabled:bg-blue-300"
+                onClick={() => handleViewCertificate(certificate.certificateId)}
+                className="flex-1 px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
               >
                 View Certificate
               </button>
               <button
-                onClick={() => handleDownload(certificate.id)}
-                disabled={isDownloading && selectedCertificateId === certificate.id}
+                onClick={() => handleDownload(certificate.certificateId)}
+                disabled={isDownloading && selectedCertificateId === certificate.certificateId}
                 className="flex-1 px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition disabled:bg-green-300"
               >
-                {isDownloading && selectedCertificateId === certificate.id ? 'Downloading...' : 'Download PDF'}
+                {isDownloading && selectedCertificateId === certificate.certificateId ? 'Downloading...' : 'Download PDF'}
               </button>
             </div>
           </div>

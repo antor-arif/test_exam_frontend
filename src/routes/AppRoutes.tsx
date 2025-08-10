@@ -14,6 +14,7 @@ import VerifyOTP from '../features/auth/VerifyOTP';
 import Profile from '../features/user/Profile';
 import MyResults from '../features/user/MyResults';
 import Certificates from '../features/user/Certificates';
+import CertificateViewerPage from '../pages/CertificateViewerPage';
 import PublicRoute from '../components/PublicRoute';
 
 // Admin components
@@ -236,6 +237,16 @@ const AppRoutes: React.FC = () => {
             <PrivateRoute>
             <RoleProtectedRoute allowedRoles={['student']}>
                 <MyResults />
+            </RoleProtectedRoute>
+            </PrivateRoute>
+        }
+        />
+        <Route
+        path="/certificates/:certificateId/view"
+        element={
+            <PrivateRoute>
+            <RoleProtectedRoute allowedRoles={['student']}>
+                <CertificateViewerPage />
             </RoleProtectedRoute>
             </PrivateRoute>
         }
