@@ -123,7 +123,7 @@ const MyResults: React.FC = () => {
                   <td className="py-4 px-4 text-sm text-gray-500">
                     {result.hasCertificate ? (
                       <Link 
-                        to={`/certificates/${result.certificateId}`}
+                        to={`/certificates/${result.certificateId}/view`}
                         className="text-blue-600 hover:underline flex items-center"
                       >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
