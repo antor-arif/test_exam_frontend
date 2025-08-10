@@ -59,7 +59,7 @@ const QuizManagement = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <form onSubmit={handleSearch} className="flex gap-3 mb-6">
+        {/* <form onSubmit={handleSearch} className="flex gap-3 mb-6">
           <input
             type="text"
             placeholder="Search quizzes..."
@@ -73,7 +73,7 @@ const QuizManagement = () => {
           >
             Search
           </button>
-        </form>
+        </form> */}
 
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
