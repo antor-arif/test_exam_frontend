@@ -115,13 +115,6 @@ const Header: React.FC = () => {
                       Manage Quizzes
                     </Link>
                     <Link 
-                      to="/admin/questions" 
-                      className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      Manage Questions
-                    </Link>
-                    <Link 
                       to="/admin/users" 
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                       onClick={() => setDropdownOpen(false)}
