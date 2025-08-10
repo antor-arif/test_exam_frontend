@@ -7,7 +7,7 @@ let isHandling401Error = false;
 
 
 const baseQueryWithAuth = fetchBaseQuery({
-  baseUrl: 'http://localhost:4000/api',
+  baseUrl: process.env.VITE_API_BASE_URL || 'https://test-exam-backend.onrender.com/api',
   prepareHeaders: (headers) => {
     const token = getAccessToken();
     if (token) {
